@@ -19,6 +19,7 @@ defmodule ChatPartyWeb.Router do
 
     live "/", RoomsLive.Index
     live "/rooms", RoomsLive.Index
+    live "/rooms/new", RoomsLive.New
   end
 
   # Other scopes may use custom stacks.
