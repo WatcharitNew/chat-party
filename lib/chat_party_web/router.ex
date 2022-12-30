@@ -17,7 +17,8 @@ defmodule ChatPartyWeb.Router do
   scope "/", ChatPartyWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", RoomsLive.Index
+    live "/rooms", RoomsLive.Index
   end
 
   # Other scopes may use custom stacks.
