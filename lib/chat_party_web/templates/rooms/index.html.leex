@@ -2,6 +2,16 @@
 <span><%= link "New Room", to: Routes.live_path(@socket,  ChatPartyWeb.RoomsLive.New) %></span>
 <ul>
   <%= for room <- @rooms do %>
-    <li><%= room.name %></li>
+    <li phx-click="get_messages" phx-value-id=<%= room.id %>>
+      <%= room.name %>
+    </li>
   <% end %>
 </ul>
+<%= if @room do %>
+  <h2>Messages</h2>
+  <ul>
+    <%= for message <- @room.messages do %>
+      <li><%= message.text %></li>
+    <% end %>
+  </ul>
+<% end %>
