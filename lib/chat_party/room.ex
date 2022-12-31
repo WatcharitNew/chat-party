@@ -8,6 +8,7 @@ defmodule ChatParty.Room do
     field :name, :string
 
     many_to_many :users, ChatParty.User, join_through: "user_rooms"
+    has_many :messages, ChatParty.Message
 
     timestamps()
   end
@@ -34,5 +35,10 @@ defmodule ChatParty.Room do
     %Room{}
     |> Room.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def get_room!(id) do
+    Repo.get!(Room, id)
+    |> Repo.preload([:messages])
   end
 end
