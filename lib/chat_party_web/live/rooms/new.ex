@@ -11,8 +11,6 @@ defmodule ChatPartyWeb.RoomsLive.New do
   end
 
   def mount(_params, %{}, socket) do
-    # if connected?(socket), do: Process.send_after(self(), :update, 1000)
-
     {
       :ok,
       assign(socket, %{
@@ -20,15 +18,6 @@ defmodule ChatPartyWeb.RoomsLive.New do
       })
     }
   end
-
-  # def handle_event(:validate, %{"user" => params}, socket) do
-  #   changeset =
-  #     %User{}
-  #     |> Accounts.change_user(params)
-  #     |> Map.put(:action, :insert)
-
-  #   {:noreply, assign(socket, changeset: changeset)}
-  # end
 
   def handle_event("validate", %{"room" => params}, socket) do
     changeset =
