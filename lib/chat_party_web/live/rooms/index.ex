@@ -1,7 +1,7 @@
 defmodule ChatPartyWeb.RoomsLive.Index do
   use ChatPartyWeb, :live_view
 
-  alias ChatParty.Room
+  alias ChatParty.{Room, Message}
   alias ChatPartyWeb.RoomsView
 
   def render(assigns) do
@@ -17,7 +17,8 @@ defmodule ChatPartyWeb.RoomsLive.Index do
         socket,
         %{
           rooms: rooms(),
-          room: nil
+          room: nil,
+          message_changeset: nil
         }
       )
     }
@@ -31,13 +32,33 @@ defmodule ChatPartyWeb.RoomsLive.Index do
       :noreply,
       assign(socket, %{
         rooms: rooms(),
-        room: selected_room
+        room: selected_room,
+        message_changeset: socket.assigns.message_changeset
       })
     }
   end
 
   def handle_event("get_messages", %{"id" => id}, socket) do
-    {:noreply, assign(socket, %{room: room(id)})}
+    {
+      :noreply,
+      assign(socket, %{
+        room: room(id),
+        message_changeset: message_changeset(%{})
+      })
+    }
+  end
+
+  def handle_event("send_message", %{"message" => params}, socket) do
+    case Message.create_message(Map.merge(params, %{"room_id" => socket.assigns.room.id})) do
+      {:ok, _} ->
+        socket
+        |> put_flash(:info, "Message sent successfully.")
+
+        {:noreply, assign(socket, message_changeset: nil)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, message_changeset: changeset)}
+    end
   end
 
   defp rooms() do
@@ -46,5 +67,11 @@ defmodule ChatPartyWeb.RoomsLive.Index do
 
   defp room(id) do
     Room.get_room!(id)
+  end
+
+  defp message_changeset(params) do
+    %Message{}
+    |> Message.change_message(params)
+    |> Map.put(:action, :insert)
   end
 end
