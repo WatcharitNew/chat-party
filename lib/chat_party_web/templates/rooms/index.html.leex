@@ -2,6 +2,25 @@
 <span><%= link "New Room", to: Routes.live_path(@socket,  ChatPartyWeb.RoomsLive.New) %></span>
 <ul>
   <%= for room <- @rooms do %>
-    <li><%= room.name %></li>
+    <li phx-click="get_messages" phx-value-id=<%= room.id %>>
+      <%= room.name %>
+    </li>
   <% end %>
 </ul>
+<%= if @room do %>
+  <h2>Messages</h2>
+  <ul>
+    <%= for message <- @room.messages do %>
+      <li><%= message.text %></li>
+    <% end %>
+  </ul>
+  <%= f = form_for @message_changeset, "#", [phx_submit: :send_message] %>
+    <%= label f, :text %>
+    <%= text_input f, :text %>
+    <%= error_tag f, :text %>
+
+    <div>
+      <%= submit "Send", phx_disable_with: "Sending..." %>
+    </div>
+  </form>
+<% end %>

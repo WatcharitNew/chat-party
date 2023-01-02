@@ -5,6 +5,7 @@ defmodule ChatParty.User do
     field :name, :string
 
     many_to_many :rooms, ChatParty.Room, join_through: "user_rooms"
+    has_many :messages, ChatParty.Message
 
     timestamps()
   end
